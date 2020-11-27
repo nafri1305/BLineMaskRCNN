@@ -1,6 +1,8 @@
 # Fine-tune Mask-RCNN on a customized BLine dataset
+This program is created for my FYP project in Nanyang Polytechnic
 
-There is a total number of 100 BLine images in the dataset. 75 images are used for training and 25 images are used for validation.
+To get started, download fypProgram v2.0ipynb and run it on Google Colab.
+There are steps in the program to guide you in using it.
 
 I used VGG Image Annotator ([VIA](http://www.robots.ox.ac.uk/~vgg/software/via/)) to annotate the training and validation images.
 
