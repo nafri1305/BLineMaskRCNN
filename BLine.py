@@ -170,7 +170,7 @@ class CustomDataset(utils.Dataset):
     def image_reference(self, image_id):
         """Return the path of the image."""
         info = self.image_info[image_id]
-        if info["source"] == "beagle":
+        if info["source"] == "BLine":
             return info["path"]
         else:
             super(self.__class__, self).image_reference(image_id)
