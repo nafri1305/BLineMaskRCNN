@@ -206,6 +206,10 @@ def color_splash(image, mask):
 
     Returns result image.
     """
+    # Change the red value of the RGB image
+    # so that the masks will show up as red
+    rgb_img = image
+    rgb_img[:,:,0] = 180
     # Make a grayscale copy of the image. The grayscale copy still
     # has 3 RGB channels, though.
     gray = skimage.color.gray2rgb(skimage.color.rgb2gray(image)) * 255
@@ -213,7 +217,7 @@ def color_splash(image, mask):
     mask = (np.sum(mask, -1, keepdims=True) >= 1)
     # Copy color pixels from the original color image where mask is set
     if mask.shape[0] > 0:
-        splash = np.where(mask, image, gray).astype(np.uint8)
+        splash = np.where(mask, rgb_img, gray).astype(np.uint8)
     else:
         splash = gray
     return splash
