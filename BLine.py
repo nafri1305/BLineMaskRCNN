@@ -211,11 +211,9 @@ def color_splash(image, mask):
     # so that the masks will show up as red
     rgb_img = image
     rgb_img[:,:,0] = 180 
-
     # Make a grayscale copy of the image. The grayscale copy still
     # has 3 RGB channels, though.
     gray = skimage.color.gray2rgb(skimage.color.rgb2gray(image)) * 255
-    
     # We're treating all instances as one, so collapse the mask into one layer
     mask = (np.sum(mask, -1, keepdims=True) >= 1)
     # Copy color pixels from the original color image where mask is set
@@ -225,13 +223,13 @@ def color_splash(image, mask):
         splash = gray
     return splash
 
-def maskNum(image, rois):
+def MaskNum(image, rois):
     rois = (np.sum(rois, -1, keepdims=True) >= 1)
     if rois.shape[0] > 0:
-      maskNumVar = rois.shape[0]
+      MaskNumVar = rois.shape[0]
     else:
-      maskNumVar = 0
-    return maskNumVar
+      MaskNumVar = 0
+    return MaskNumVar
 
 def detect_and_color_splash(model, image_path=None, video_path=None):
     assert image_path or video_path
@@ -250,8 +248,9 @@ def detect_and_color_splash(model, image_path=None, video_path=None):
         file_name = "splash_{:%Y%m%dT%H%M%S}.png".format(datetime.datetime.now())
         skimage.io.imsave(file_name, splash)
         # Show number of B-Lines in image
-        maskNumVar = maskNum(image, r['rois'])
-        print("Number of B-lines detected: " + str(maskNumVar))
+        HighestMaskNumVar = MaskNum(image, r['rois'])
+        print("Maxiumum number of B-lines detected: " + str(HighestMaskNumVar))
+        print("Please review the image output to identify potential stray B-lines.")
     elif video_path:
         import cv2
         # Video capture
@@ -266,11 +265,11 @@ def detect_and_color_splash(model, image_path=None, video_path=None):
                                   cv2.VideoWriter_fourcc(*'MJPG'),
                                   fps, (width, height))
 
-        count = 0
-        maskNumVar = 0
+        count = 1
+        MaskNumVar = 0
+        HighestMaskNumVar = 0
         success = True
         while success:
-            print("frame: ", count)
             # Read next image
             success, image = vcapture.read()
             if success:
@@ -282,17 +281,20 @@ def detect_and_color_splash(model, image_path=None, video_path=None):
                 splash = color_splash(image, r['masks'])
                 # RGB -> BGR to save image to video
                 splash = splash[..., ::-1]
-                # Show number of masks in image
-                NewMaskNumVar = maskNum(image, r['rois'])
-                if NewMaskNumVar > maskNumVar:
-                  maskNumVar = NewMaskNumVar
+                # Show number of B-Lines in image
+                MaskNumVar = MaskNum(image, r['rois'])
+                print("Number of B-lines detected in frame " + str(count) + ": " + str(MaskNumVar))
+                # Update maximum number of masks in video
+                if MaskNumVar > HighestMaskNumVar:
+                  HighestMaskNumVar = MaskNumVar
                 else:
-                  maskNumVar = maskNumVar
+                  HighestMaskNumVar = HighestMaskNumVar
                 # Add image to video writer
                 vwriter.write(splash)
                 count += 1
         vwriter.release()
-    print("Maxiumum number of B-lines detected: " + str(maskNumVar))
+        print("Maxiumum number of B-lines detected: " + str(HighestMaskNumVar))
+        print("Please review the video output to identify potential stray B-lines.")
     print("Saved to ", file_name)
 
 ############################################################
