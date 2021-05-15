@@ -5,4 +5,4 @@ To get started, open [fypProgramFinal.ipynb](https://colab.research.google.com/g
 
 I used VGG Image Annotator ([VIA](http://www.robots.ox.ac.uk/~vgg/software/via/)) to annotate the training and validation images.
 
-The original code is from [haochen23's fine-tune-MaskRcnn repo](https://github.com/haochen23/fine-tune-MaskRcnn), whic is adopted from [mattport's Mask-RCNN repo](https://github.com/matterport/Mask_RCNN).
+The original code is from [haochen23's fine-tune-MaskRcnn repo](https://github.com/haochen23/fine-tune-MaskRcnn), which is adopted from [mattport's Mask-RCNN repo](https://github.com/matterport/Mask_RCNN).
